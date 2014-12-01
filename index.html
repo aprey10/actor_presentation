@@ -1,0 +1,1073 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+
+	<title>Actor model and other modern approaches for building concurrent systems</title>
+
+	<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+	<meta name="author" content="Hakim El Hattab">
+
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<link rel="stylesheet" href="css/reveal.min.css">
+	<link rel="stylesheet" href="css/theme/sky.css" id="theme">
+
+	<!-- For syntax highlighting -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+	<script>
+		if( window.location.search.match( /print-pdf/gi ) ) {
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = 'css/print/pdf.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		}
+	</script>
+
+	<style type="text/css">
+		.border-none{
+			border: none;
+		}
+	</style>
+
+	<style type="text/css">
+		.no-border {
+			border: none !important;
+			box-shadow: none !important;
+		}  			
+	</style>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>Actor model </h1>
+					<h3>and other modern approaches for building concurrent systems</h3>
+					<p>
+						<small>Created by <a href="https://www.linkedin.com/in/andreypreyzner"> Andrew Preizner</a></small> 
+					</p>
+
+					<p style="texa-lign: right">
+						<img width="300" height="70" src="img/softserve.png" alt="SoftServe" class="no-border">
+					</p>
+				</section>
+
+				<section>
+					<p>
+						<img width="400" height="300" src="img/agenda.png" alt="Agenda" class="no-border">
+					</p>
+					<ul>
+						<li>Actor model</li>
+						<li>Akka</li>
+						<li>Gpars</li>
+						<li>Conclusions</li>
+					</ul>
+
+					<aside class="notes">
+						Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
+					</aside>
+				</section>
+
+				<!-- Example of nested vertical slides -->
+				<section>
+					<section>
+						<h4> Few words about classical approach for building concurrent systems in Java</h4>
+						<p class="fragment">Common model of Concurrent computing
+							<a href="#" class="image navigate-down ">
+							<img width="500" height="500" src="img/piecewo	rk.png" alt="Down arrow" class="no-border">
+							</a>
+						</p>
+
+					</section>
+					<section>
+						<h4>Shared resource</h3>
+						<p><img width="400" height="500" src="img/shared.png" alt="Down arrow" class="no-border"></p>
+					</section>
+					<section>
+						<h3>Main problems</h3>
+						<ul>
+							<li>Hard to design systems which requires a frequent data exchange between threads</li>
+							<li>Hard to debug</li>
+							<li>Unclear structure</li>
+							<li>Implicit errors (deadlock)</li>
+						</ul>
+					</section>
+					<section>
+						<a href="#/2" class="image">
+							<img width="700" height="600" src="img/cat.jpg" alt="Up arrow" class="no-border">
+						</a>
+					</section>
+				</section>
+				
+				<section>
+					<section>
+						<h2>Actor model</h2>
+						<p>
+							<img width="400" height="300" src="img/actor/actor.jpg" alt="Up arrow">
+						</p>
+
+						<p class="fragment">
+							1973, Carl Hewitt, Henry Baker, Irene Greif, William Clinger etc.
+						</p>
+					</section>
+
+					<section>
+						<p>
+							<img width="200" height="200" src="img/actor/erlang.png" alt="Up arrow" class="no-border">	
+						</p>
+
+						<p class="fragment">
+							<img width="400" height="100" src="img/actor/scala.png" alt="Up arrow" class="no-border">	
+							<img width="250" height="200" src="img/actor/akka.png" alt="Up arrow" class="no-border">
+						</p>
+
+						<p class="fragment">
+							<img width="250" height="200" src="img/actor/gpars.png" alt="Up arrow" class="no-border">	
+						</p>
+					</section>
+					
+					<section>
+						<h3>Example</h3>	
+						<p>
+							<div>
+								<img width="150" height="350" src="img/actor/AB/alice.png" alt="Up arrow" class="no-border" style="margin-left:50px;">
+								<img width="150" height="150" src="img/actor/AB/Phone.png" alt="Up arrow" class="no-border" style="margin: 100px;">	
+								<img width="200" height="200" src="img/actor/AB/bob.png" alt="Up arrow" class="no-border" style="margin-bottom:100px;">
+								<img width="200" height="200" src="img/actor/AB/bob.png" alt="Up arrow" class="no-border fragment">	
+								<img width="200" height="200" src="img/actor/AB/bob.png" alt="Up arrow" class="no-border fragment">	
+							</div>
+						</p>
+					</section>
+
+					<section>
+						<div style="margin-bottom: 300px;">
+							<img width="150" height="350" src="img/actor/AB/alice.png" alt="Up arrow" class="no-border" style="margin-left:50px;">
+
+							<div style="margin-left:50px;">
+								<img width="100" height="100" src="img/actor/AB/mail.png" alt="Up arrow" class="no-border" >	
+								<img width="100" height="100" src="img/actor/AB/mail.png" alt="Up arrow" class="no-border">	
+								<img width="100" height="100" src="img/actor/AB/mail.png" alt="Up arrow" class="no-border">	
+							</div>
+
+							<img width="200" height="200" src="img/actor/AB/bob.png" alt="Up arrow" class="no-border" style="margin-left: 50px;">
+							<img width="200" height="200" src="img/actor/AB/bob.png" alt="Up arrow" class="no-border">	
+							<img width="200" height="200" src="img/actor/AB/bob.png" alt="Up arrow" class="no-border">	
+						</div>
+					</section>
+
+				<!-- 	<section>
+						<h3>Sequential</h3>	
+						<p>
+							<img width="600" height="500" src="img/actor/AB/d1.png" alt="Up arrow">	
+						</p>
+					</section>
+
+					<section>
+						<h3>Parallel example?</h3>	
+						<p>
+							<img width="600" height="500" src="img/actor/AB/d2.jpg" alt="Up arrow">	
+						</p>		
+					</section> -->
+
+			<!-- 		<section>
+						<h3>Actor model</h3>	
+						<p>
+							<img width="600" height="500" src="img/actor/AB/d3.png" alt="Up arrow">	
+						</p>		
+					</section> -->
+
+					<section>
+						<h3>Common schema</h3>	
+						<p>
+							<img width="1200" height="500" src="img/actor/common.png" alt="Up arrow" class="no-border">	
+						</p>		
+					</section>
+
+					<section>
+						<h3>Actor</h3>	
+						<p>
+							<img width="1200" height="500" src="img/actor/actor.png" alt="Up arrow">	
+						</p>		
+					</section>
+
+				</section>
+
+				<section>
+					<section>
+						<p>
+							<img width="400" height="400" src="img/actor/akka/logo.png" alt="Up arrow" class="no-border">	
+						</p>
+						<p>
+							<img width="400" height="100" src="img/actor/scala.png" alt="Up arrow" class="no-border fragment">	
+							<img width="200" height="200" src="img/actor/java.png" alt="Up arrow" class="no-border fragment">	
+						</p>		
+					</section>
+
+					<section>
+						<p>Akka is an open-source toolkit and runtime simplifying the construction of concurrent and distributed applications on the JVM.</p>
+						<ul>
+							<li class="fragment">Creating actor</li>
+							<li class="fragment">Message exchanging</li>
+							<li class="fragment">Threads scheduling (green threads)<br/>
+								<img width="500" height="400" src="img/green.jpg" alt="Up arrow" class="no-border"/>	
+							</li>
+
+						</ul>
+					</section>
+
+					<section>
+						<h3>Example: calculate the value of Pi</h3>
+						<p>
+							Let's do it with actors
+						</p>
+						<p class="fragment">
+							Formula: <br/>
+							<img width="500" height="100" src="img/actor/akka/formula.png" alt="Up arrow">	
+						</p>
+					</section>
+
+					<section>
+						<p>
+							Application structure diagram: <br/>
+							<img width="700" height="600" src="img/actor/akka/pi.png" alt="Yep">	
+						</p>
+					</section>
+
+
+					<section>
+						<p>
+							Work Message: <br/>
+							<img width="700" height="600" src="img/actor/akka/pi_work.png" alt="Yep">	
+						</p>
+
+					</section>
+					<section>
+						<p>
+							Work:
+							<pre><code data-trim contenteditable>
+
+						static class Work {
+					        private final int start;
+					        private final int nrOfElements;
+
+					        public Work(int start, int nrOfElements) {
+					            this.start = start;
+					            this.nrOfElements = nrOfElements;
+					        }
+
+					        public int getStart() {
+					            return start;
+					        }
+
+					        public int getNrOfElements() {
+					            return nrOfElements;
+					        }
+					    }
+					    	</code></pre>
+
+						</p>
+					</section>
+
+					<section>
+						<p>
+							Result Message: <br/>
+							<img width="700" height="600" src="img/actor/akka/pi_result.png" alt="Yep">	
+						</p>
+
+					</section>
+
+					<section>
+						<p> 
+							Result:
+						
+						<pre><code data-trim contenteditable>
+						    static class Result {
+						        private final double value;
+
+						        public Result(double value) {
+						            this.value = value;
+						        }
+
+						        public double getValue() {
+						            return value;
+						        }
+						    }
+
+						 </code></pre>
+
+						</p>
+
+					</section>
+
+					<section>
+						<p>
+							PiApproximation Message: <br/>
+							<img width="700" height="600" src="img/actor/akka/pi_pi.png" alt="Yep">	
+						</p>
+
+					</section>
+
+					<section>
+						<p>
+							PiApproximation:
+
+							<pre><code data-trim contenteditable>
+
+						    static class PiApproximation {
+						        private final double pi;
+						        private final Duration duration;
+
+						        public PiApproximation(double pi, Duration duration) {
+						            this.pi = pi;
+						            this.duration = duration;
+						        }
+
+						        public double getPi() {
+						            return pi;
+						        }
+
+						        public Duration getDuration() {
+						            return duration;
+						        }
+						    }	
+							</code></pre>
+
+						</p>
+					</section>
+
+					<section>
+						<p>
+							Worker Actor: <br/>
+							<img width="700" height="600" src="img/actor/akka/pi_worker.png" alt="Yep">	
+						</p>
+
+					</section>
+		<section>
+			<p>
+				Worker actor:
+			</p>
+			<pre><code data-trim >
+				public static class Worker extends UntypedActor {
+
+        private double calculatePiFor(int start, int nrOfElements) {
+            double acc = 0.0;
+            for (int i = start * nrOfElements; i <= ((start + 1) * nrOfElements - 1); i++) {
+                acc += 4.0 * (1 - (i % 2) * 2) / (2 * i + 1);
+            }
+            return acc;
+        }
+
+        public void onReceive(Object message) {
+            if (message instanceof Work) {
+                Work work = (Work) message;
+                double result = calculatePiFor(work.getStart(), work.getNrOfElements());
+                getSender().tell(new Result(result), getSelf());
+            } else {
+                unhandled(message);
+            }
+        }
+    }
+
+			</code></pre>						
+		</section>
+
+		<section>
+			<p>
+				Master Actor: <br/>
+				<img width="700" height="600" src="img/actor/akka/pi_master.png" alt="Yep">	
+			</p>
+
+		</section>
+
+		<section>
+			<p>
+				Master actor:
+			</p>
+			<pre><code data-trim>
+				public static class Master extends UntypedActor {
+        private final int nrOfMessages;
+        private final int nrOfElements;
+
+        private double pi;
+        private int nrOfResults;
+        private final long start = System.currentTimeMillis();
+
+        private final ActorRef listener;
+        private final ActorRef workerRouter;
+
+        public Master(final int nrOfWorkers, int nrOfMessages, int nrOfElements, ActorRef listener) {
+            this.nrOfMessages = nrOfMessages;
+            this.nrOfElements = nrOfElements;
+            this.listener = listener;
+
+            workerRouter = this.getContext().actorOf(new Props(Worker.class).withRouter(new RoundRobinRouter(nrOfWorkers)),
+                    "workerRouter");
+        }
+
+        public void onReceive(Object message) {
+            if (message instanceof Calculate) {
+                for (int start = 0; start < nrOfMessages; start++) {
+                    workerRouter.tell(new Work(start, nrOfElements), getSelf());
+                }
+            } else if (message instanceof Result) {
+                Result result = (Result) message;
+                pi += result.getValue();
+                nrOfResults += 1;
+                if (nrOfResults == nrOfMessages) {
+                    // Send the result to the listener
+                    Duration duration = Duration.create(System.currentTimeMillis() - start, TimeUnit.MILLISECONDS);
+                    listener.tell(new PiApproximation(pi, duration), getSelf());
+                    // Stops this actor and all its supervised children
+                    getContext().stop(getSelf());
+                }
+            } else {
+                unhandled(message);
+            }
+        }
+
+			</code></pre>						
+		</section>
+
+		<section>
+			<p>
+				Listener Actor: <br/>
+				<img width="700" height="600" src="img/actor/akka/pi_listenner.png" alt="Yep">	
+			</p>
+
+		</section>
+
+		<section>
+			<p>
+				Listener actor:
+			</p>
+			<pre><code data-trim>
+public static class Listener extends UntypedActor {
+            public void onReceive(Object message) {
+                if (message instanceof PiApproximation) {
+                    PiApproximation approximation = (PiApproximation) message;
+                    System.out.println(String.format("\n\tPi approximation: \t\t%s\n\tCalculation time: \t%s",
+                            approximation.getPi(), approximation.getDuration()));
+                    getContext().system().shutdown();
+                } else {
+                    unhandled(message);
+                }
+            }
+        }
+
+			</code></pre>						
+		</section>
+
+				<section>
+			<p>
+				Pi classs:
+			</p>
+			<pre><code data-trim>
+public static void main(String[] args) {
+        Pi pi = new Pi();
+        pi.calculate(4, 10000, 10000);
+    }
+
+    // actors and messages ...
+
+    public void calculate(final int nrOfWorkers, final int nrOfElements, final int nrOfMessages) {
+        // Create an Akka system
+        ActorSystem system = ActorSystem.create("PiSystem");
+
+        // create the result listener, which will print the result and shutdown the system
+        final ActorRef listener = system.actorOf(new Props(Master.Listener.class), "listener");
+
+        // create the master
+        ActorRef master = system.actorOf(new Props(new UntypedActorFactory() {
+            public UntypedActor create() {
+                return new Master(nrOfWorkers, nrOfMessages, nrOfElements, listener);
+            }
+        }), "master");
+
+        // start the calculation
+        master.tell(new Calculate());
+
+    }
+
+			</code></pre>						
+		</section>
+
+		<section>
+			<img width="600" height="600" src="img/actor/akka/summary.jpg" alt="Up arrow" class="no-border">	
+		</section>
+
+	</section>
+
+
+	<section>
+		<section>
+			<p>
+				<img width="700" height="400" src="img/gpars/gpars.png" alt="Up arrow" class="no-border">	
+			</p>
+			<p>
+				<img width="300" height="200" src="img/gpars/groovy.png" alt="Up arrow" class="no-border fragment">	
+				<img width="200" height="200" src="img/actor/java.png" alt="Up arrow" class="no-border fragment">
+				<img width="400" height="100" src="img/gpars/clojure.png" alt="Up arrow" class="no-border fragment">		
+			</p>	
+		</section>
+
+		<section>
+			<h3>
+				The concepts available in GPars can be categorized into three groups:
+			</h3>
+
+			<p>
+				<ul>
+					<li class="fragment">Code-level helpers Constructs that can be applied to small parts of the code-base such as individual algorithms or data structures without any major changes in the overall project architecture: </li>
+					<li class="fragment">Architecture-level concepts Constructs that need to be taken into account when designing the project structure</li>
+					<li class="fragment">Shared Mutable State Protection </li>
+				</ul>
+			</p>
+		</section>
+
+		<section>
+			<h3>Parallel collection</h3>
+			
+			<p class="fragment" style="margin-top: 50px;">
+				JSR-166y <br/>
+				<img width="100" height="200" src="img/gpars/java7.png" alt="Up arrow" class="no-border fragment">
+				<img width="200" height="200" src="img/gpars/java8.png" alt="Up arrow" class="no-border fragment">
+			</p>
+
+			<p class="fragment">
+				<img width="500" height="100" src="img/gpars/fork.png" alt="Up arrow" class="no-border"><br/>	
+				Fork/Join Framework
+			</p>
+		</section>
+
+		<section>
+			<h3>Fork/Join Framework</h3>
+			<p class="fragment" style="text-align: left; font-size: 25px;">
+			The <i>fork/join framework</i> is an implementation of the ExecutorService interface that helps you take advantage of multiple processors. 
+			It is designed for work that can be broken into smaller pieces recursively. The goal is to use all the available processing power to enhance the performance of your application.
+			</p>
+			<p class="fragment">
+				<img width="500" height="500" src="img/gpars/join-fork.png" alt="Up arrow" class="no-border">
+			</p>
+		</section>
+
+		<section>
+			<h3>Data Parallelism</h3>
+
+			<pre><code data-trim>
+ //multiply numbers 
+ GParsPool.withPool {
+     final List result = [1, 2, 3, 4, 5].collectParallel {it * 2}
+     assert ([2, 4, 6, 8, 10].equals(result))
+ }
+			</code></pre>	
+
+			<p class="fragment">
+				GParsPool
+			</p>
+
+			<p class="fragment">
+				GParsExecutorsPool
+			</p>			
+
+
+		</section>
+
+		<section class="fragment"> 
+			<p>
+				The following methods are currently supported on all objects in Groovy:	
+			</p>
+			<ul>
+				<li>eachParallel()</li>
+				<li>eachWithIndexParallel()</li>
+				<li>collectParallel()</li>
+				<li>collectManyParallel()</li>
+				<li>findAllParallel()</li>
+				<li>findAnyParallel</li>
+				<li>findParallel()</li>
+				<li>everyParallel()</li>
+				<li>anyParallel()</li>
+				<li>groupByParallel()</li>
+				<li>minParallel()</li>
+				<li>maxParallel()</li>
+				<li>sumParallel()</li>
+				<li>countParallel()</li>
+			</ul>
+		</section>
+
+		<section>
+			<h3>Map / Reduce</h3>
+
+			<ul class="fragment">
+				<li>map()</li>
+				<li>reduce()</li>
+				<li>filter()</li>
+				<li>size()</li>
+				<li>sum()</li>
+				<li>min()</li>
+				<li>max()</li>
+				<li>sort()</li>
+				<li>groupBy()</li>
+				<li>combine()</li>
+			</ul>
+
+					<pre class="fragment"><code data-trim style="weight: 800px; height: 100px;">
+
+def myNumbers = (1..1000).parallel.filter { it % 2 == 0 }.map { Math.sqrt it }.collection
+			</code></pre>	
+
+		</section>
+
+		<section>
+			<h3>
+				Asynchronous Functions
+			</h3>
+
+			<ul class="star fragment">
+				<li>async() - Creates an asynchronous variant of the supplied closure, which when invoked returns a future for the potential return value</li>
+				<li>callAsync() - Calls a closure in a separate thread supplying the given arguments, returning a future for the potential return value,</li>
+			</ul>
+
+			<pre class="fragment"><code data-trim>
+
+Closure download = {String url ->
+        url.toURL().text
+    }.asyncFun()
+    Closure loadFile = {String fileName ->
+        …  //load the file here
+    }.asyncFun()
+
+    Closure hash = {s -> s.hashCode()}.asyncFun()
+
+    Closure compare = {int first, int second ->
+        first == second
+    }.asyncFun()
+
+    def result = compare(hash(download('http://www.gpars.org')), hash(loadFile('/coolStuff/gpars/website/index.html')))
+    println 'Allowed to do something else now'
+    println "The result of comparison: " + result.get()
+			</code></pre>
+
+		</section>
+
+
+		<section>
+			<h3>Dataflow</h3>
+			<p class="fragment">Dataflow concurrency offers an alternative concurrency model</p>
+			<p class="fragment">
+			 			<pre class="fragment"><code data-trim>
+
+import static groovyx.gpars.dataflow.Dataflow.task
+final def x = new DataflowVariable()
+final def y = new DataflowVariable()
+final def z = new DataflowVariable()
+
+task {
+    z << x.val + y.val
+}
+
+task {
+    x << 10
+}
+
+task {
+    y << 5
+}
+
+println "Result: ${z.val}"
+			</code></pre>
+			</p>
+			<p class="fragment">
+				The three tasks in the example do not necessarily need to be mapped to three physical threads.
+			</p>
+		</section>
+
+		<section>
+			<p>
+				Publish-subscriber communication example:
+			</p>
+			<pre><code data-trim>
+
+			DataflowWriteChannel broadcastStream = new DataflowBroadcast()
+DataflowReadChannel stream1 = broadcastStream.createReadChannel()
+DataflowReadChannel stream2 = broadcastStream.createReadChannel()
+broadcastStream << 'Message1'
+broadcastStream << 'Message2'
+broadcastStream << 'Message3'
+assert stream1.val == stream2.val
+assert stream1.val == stream2.val
+assert stream1.val == stream2.val
+			</code></pre>
+
+		</section>
+
+		<section>
+			<h3>
+				Gpars Actors
+			</h3>
+			<img width="400" height="300" src="img/actor/actor.jpg" alt="Up arrow" class="no-border"><br/>	
+		</section>
+
+		<section>
+			<p>
+				Actor example
+			</p>
+
+			<pre class="fragment"><code data-trim>
+
+class Player extends DefaultActor {
+    String name
+    Actor server
+    int myNum
+
+    void act() {
+        loop {
+            myNum = new Random().nextInt(10)
+            server.send myNum
+            react {
+                switch (it) {
+                    case 'too large': println "$name: $myNum was too large"; break
+                    case 'too small': println "$name: $myNum was too small"; break
+                    case 'you win': println "$name: I won $myNum"; terminate(); break
+                }
+            }
+        }
+    }
+}
+			</code></pre>
+
+	
+
+		</section>
+
+		<section>
+
+		<h4>Groovy magic</h4>
+
+		<p class="fragment">Sending message:
+						<pre class="fragment"><code data-trim>
+			def passiveActor = Actors.actor{
+    loop {
+        react { msg -> println "Received: $msg"; }
+    }
+}
+passiveActor.send 'Message 1'
+passiveActor << 'Message 2'    //using the << operator
+passiveActor 'Message 3'       //using the implicit call() method
+}
+
+</code></pre>
+
+		</p>
+
+		<p class="fragment"> Send And Wait
+				<pre class="fragment"><code data-trim>
+
+	def replyingActor = Actors.actor{
+    loop {
+        react { msg ->
+            println "Received: $msg";
+            reply "I've got $msg"
+        }
+    }
+}
+def reply1 = replyingActor.sendAndWait('Message 4')
+def reply2 = replyingActor.sendAndWait('Message 5', 10, TimeUnit.SECONDS)
+				</code></pre>
+		</p>
+
+
+</section>
+		<section>
+
+		<h4>Groovy Magic</h4>
+
+			
+
+<p class="fragment">Send and continue
+
+<pre class="fragment"><code data-trim>
+
+	friend.sendAndContinue 'I need money!', {money -> pocket money}
+println 'I can continue while my friend is collecting money for me'
+
+</code></pre>
+
+</p>
+
+<p class="fragment">Send and promise
+
+<pre class="fragment"><code data-trim>
+
+	Promise loan = friend.sendAndPromise 'I need money!'
+println 'I can continue while my friend is collecting money for me'
+loan.whenBound {money -> pocket money}  //asynchronous waiting for a reply
+println "Received ${loan.get()}"  //synchronous waiting for a reply
+
+</code></pre>
+</p>
+
+		<p class="fragment">Receiving messages</p>
+					<pre class="fragment"><code data-trim>
+				println 'Waiting for a gift'
+react {gift ->
+    if (myWife.likes gift) reply 'Thank you!'
+}
+			</code></pre>
+
+</section>
+
+		<section>
+			<h4>Groovy Magic</h4>
+
+
+			<p class='fragment'> Undelivered messages
+				<pre class="fragment"><code data-trim>
+					final DefaultActor me
+me = Actors.actor {
+    def message = 1
+    message.metaClass.onDeliveryError = {->
+        //send message back to the caller
+        me << "Could not deliver $delegate"
+    }
+
+    def actor = Actors.actor {
+        react {
+            //wait 2sec in order next call in demo can be emitted
+            Thread.sleep(2000)
+            //stop actor after first message
+            stop()
+        }
+    }
+
+    actor << message
+    actor << message
+
+    react {
+        //print whatever comes back
+        println it
+    }
+
+}
+
+me.join()
+				</code>	</pre>
+			</p>
+		</section>
+
+		<section>
+			<p>Groovy magic</p>
+
+			<ul class="fragment">
+				<li><strong>afterStart()</strong> - called right after the actor has been started.</li>
+				<li><strong>afterStop(List undeliveredMessages)</strong> - called right after the actor is stopped, passing in all the unprocessed messages from the queue.</li>
+				<li><strong>onInterrupt(InterruptedException e)</strong> - called when the actor's thread gets interrupted. Thread interruption will result in the stopping the actor in any case.</li>
+				<li><strong>onTimeout()</strong> - called when no messages are sent to the actor within the timeout specified for the currently blocking react method.</li>
+				<li><strong>onException(Throwable e)</strong> - called when an exception occurs in the actor's event handler. Actor will stop after return from this method.</li>
+			</ul>
+
+		</section>
+
+		<section>
+
+						<pre><code data-trim>
+class MyActor extends DefaultActor {
+    public void afterStart() {
+        …
+    }
+    public void onTimeout() {
+        …
+    }
+    protected void act() {
+       …
+    }
+}
+			</code></pre>
+
+			
+		</section>
+
+		<section>
+		<p>
+			Stateless Actors
+		</p>
+						<pre class="fragment"><code data-trim>
+import groovyx.gpars.actor.Actors
+import groovyx.gpars.actor.DynamicDispatchActor
+final class MyActor extends DynamicDispatchActor {
+
+    void onMessage(String message) {
+        println 'Received string'
+    }
+
+    void onMessage(Integer message) {
+        println 'Received integer'
+        reply 'Thanks!'
+    }
+
+    void onMessage(Object message) {
+        println 'Received object'
+        sender.send 'Thanks!'
+    }
+
+    void onMessage(List message) {
+        println 'Received list'
+        stop()
+    }
+}
+
+final def myActor = new MyActor().start()
+
+Actors.actor {
+    myActor 1
+    myActor ''
+    myActor 1.0
+    myActor(new ArrayList())
+}.join()
+			</code></pre>			
+		</section>
+
+		<section>
+		<p>
+			Add message handlers dynamically 
+		</p>
+								<pre><code data-trim>
+final Actor myActor = new DynamicDispatchActor().become {
+    when {String msg -> println 'A String'; reply 'Thanks'}
+    when {Double msg -> println 'A Double'; reply 'Thanks'}
+    when {msg -> println 'A something ...'; reply 'What was that?';stop()}
+}
+myActor.start()
+Actors.actor {
+    myActor 'Hello'
+    myActor 1.0d
+    myActor 10 as BigDecimal
+    myActor.join()
+}.join()
+			</code></pre>			
+		</section>
+
+
+	<section>
+	<p>	
+		Static Dispatch actor
+	</p>
+									<pre><code data-trim>
+final class MyActor extends StaticDispatchActor < String > {
+    void onMessage(String message) {
+        println 'Received string ' + message
+        switch (message) {
+            case 'hello':
+                reply 'Hi!'
+                break
+            case 'stop':
+                stop()
+        }
+    }
+}
+			</code></pre>		
+	</section>
+
+		<!-- <section>
+			<p>
+				Architecture-level concepts Constructs that need to be taken into account when designing the project structure
+				<li>Actors</li>
+				<li>Communicating Sequential Processes (CSP)</li>
+				<li>Dataflow</li>
+				<li>Data Parallelism</li>
+			</p>
+			<p>
+				Shared Mutable State Protection Although about 95% of current use of shared mutable state can be avoided using proper abstractions, good abstractions are still necessary for the remaining 5% use cases, when shared mutable state cannot be avoided
+				<li>Agents</li>
+				<li>Software Transactional Memory (not fully implemented in GPars as yet)</li>
+			</p>
+		</section> -->
+		<section>
+			<img width="600" height="600" src="img/actor/akka/summary.jpg" alt="Up arrow" class="no-border">	
+		</section>
+		
+	</section>
+
+<section>
+	<p>	
+		<img width="300" height="300" src="img/grails.png" alt="Up arrow" class="no-border">
+	</p>
+
+	<p class="fragment">
+
+		<img width="200" height="150" src="img/actor/akka.png" alt="Up arrow" class="no-border"/> 
+
+		<img width="300" height="100" src="img/gpars/gpars.png" alt="Up arrow" class="no-border" style="margin-left: 50px;">
+
+		
+	</p>
+
+	<p>
+
+		<ul class="fragment">
+			<li>Dependency: compile ":akka:2.2.4.1"</li>
+			<li>Dependency: compile ":gpars:0.3"</li>
+		</ul>
+	</p>
+</section>	
+
+	
+
+
+<section>
+	<img width="700" height="700" src="img/questions.png" alt="Up arrow" class="no-border"><br/>	
+</section>
+
+</div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+				{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+				{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+				{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+				{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+				{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+				{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+</script>
+
+</body>
+</html>
