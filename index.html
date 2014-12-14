@@ -665,7 +665,8 @@ public void calculate(final int nrOfWorkers, final int nrOfElements,
 
 					<pre class="fragment"><code data-trim style="weight: 800px; height: 100px;">
 
-def myNumbers = (1..1000).parallel.filter { it % 2 == 0 }.map { Math.sqrt it }.collection
+def myNumbers = (1..1000).parallel.filter { it % 2 == 0 }.map {
+   Math.sqrt it }.collection
 			</code></pre>	
 
 		</section>
@@ -679,12 +680,17 @@ def myNumbers = (1..1000).parallel.filter { it % 2 == 0 }.map { Math.sqrt it }.c
 				<li>async() - Creates an asynchronous variant of the supplied closure, which when invoked returns a future for the potential return value</li>
 				<li>callAsync() - Calls a closure in a separate thread supplying the given arguments, returning a future for the potential return value,</li>
 			</ul>
-
-			<pre class="fragment"><code data-trim>
+		</section>
+		<section>
+			<p>
+				Asynchronous functions example
+			</p>
+			<pre><code data-trim>
 
 Closure download = {String url ->
         url.toURL().text
     }.asyncFun()
+
     Closure loadFile = {String fileName ->
         …  //load the file here
     }.asyncFun()
@@ -695,7 +701,8 @@ Closure download = {String url ->
         first == second
     }.asyncFun()
 
-    def result = compare(hash(download('http://www.gpars.org')), hash(loadFile('/coolStuff/gpars/website/index.html')))
+    def result = compare(hash(download('http://www.gpars.org')),
+				hash(loadFile('/coolStuff/gpars/website/index.html')))
     println 'Allowed to do something else now'
     println "The result of comparison: " + result.get()
 			</code></pre>
@@ -706,7 +713,7 @@ Closure download = {String url ->
 		<section>
 			<h3>Dataflow</h3>
 			<p class="fragment">Dataflow concurrency offers an alternative concurrency model</p>
-			<p class="fragment">
+			<p>
 			 			<pre class="fragment"><code data-trim>
 
 import static groovyx.gpars.dataflow.Dataflow.task
@@ -740,12 +747,14 @@ println "Result: ${z.val}"
 			</p>
 			<pre><code data-trim>
 
-			DataflowWriteChannel broadcastStream = new DataflowBroadcast()
+DataflowWriteChannel broadcastStream = new DataflowBroadcast()
 DataflowReadChannel stream1 = broadcastStream.createReadChannel()
 DataflowReadChannel stream2 = broadcastStream.createReadChannel()
+
 broadcastStream << 'Message1'
 broadcastStream << 'Message2'
 broadcastStream << 'Message3'
+
 assert stream1.val == stream2.val
 assert stream1.val == stream2.val
 assert stream1.val == stream2.val
@@ -765,7 +774,7 @@ assert stream1.val == stream2.val
 				Actor example
 			</p>
 
-			<pre class="fragment"><code data-trim>
+			<pre><code data-trim>
 
 class Player extends DefaultActor {
     String name
@@ -853,6 +862,7 @@ println 'I can continue while my friend is collecting money for me'
 
 	Promise loan = friend.sendAndPromise 'I need money!'
 println 'I can continue while my friend is collecting money for me'
+
 loan.whenBound {money -> pocket money}  //asynchronous waiting for a reply
 println "Received ${loan.get()}"  //synchronous waiting for a reply
 
@@ -874,7 +884,7 @@ react {gift ->
 
 
 			<p class='fragment'> Undelivered messages
-				<pre class="fragment"><code data-trim>
+				<pre class="fragment"><code data-trim class="java">
 					final DefaultActor me
 me = Actors.actor {
     def message = 1
@@ -882,7 +892,6 @@ me = Actors.actor {
         //send message back to the caller
         me << "Could not deliver $delegate"
     }
-
     def actor = Actors.actor {
         react {
             //wait 2sec in order next call in demo can be emitted
@@ -891,7 +900,6 @@ me = Actors.actor {
             stop()
         }
     }
-
     actor << message
     actor << message
 
@@ -899,9 +907,7 @@ me = Actors.actor {
         //print whatever comes back
         println it
     }
-
 }
-
 me.join()
 				</code>	</pre>
 			</p>
@@ -921,6 +927,7 @@ me.join()
 		</section>
 
 		<section>
+			<p>Groovy magic</p>
 
 						<pre><code data-trim>
 class MyActor extends DefaultActor {
@@ -944,24 +951,19 @@ class MyActor extends DefaultActor {
 			Stateless Actors
 		</p>
 						<pre class="fragment"><code data-trim>
-import groovyx.gpars.actor.Actors
-import groovyx.gpars.actor.DynamicDispatchActor
 final class MyActor extends DynamicDispatchActor {
 
     void onMessage(String message) {
         println 'Received string'
     }
-
     void onMessage(Integer message) {
         println 'Received integer'
         reply 'Thanks!'
     }
-
     void onMessage(Object message) {
         println 'Received object'
         sender.send 'Thanks!'
     }
-
     void onMessage(List message) {
         println 'Received list'
         stop()
@@ -969,7 +971,6 @@ final class MyActor extends DynamicDispatchActor {
 }
 
 final def myActor = new MyActor().start()
-
 Actors.actor {
     myActor 1
     myActor ''
@@ -1035,7 +1036,7 @@ final class MyActor extends StaticDispatchActor < String > {
 			</p>
 		</section> -->
 		<section>
-			<img width="600" height="600" src="img/actor/akka/summary.jpg" alt="Up arrow" class="no-border">	
+			<img width="800" height="600" src="img/summary.jpg" alt="Up arrow" class="no-border">
 		</section>
 		
 	</section>
