@@ -14,7 +14,7 @@
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-	<link rel="stylesheet" href="css/reveal.min.css">
+	<link rel="stylesheet" href="css/reveal.css">
 	<link rel="stylesheet" href="css/theme/sky.css" id="theme">
 
 	<!-- For syntax highlighting -->
@@ -58,6 +58,10 @@
 					 style="margin-bottom: 10px; margin-left: 10px;">
 
 
+			</div>
+
+			<div class="header">
+				<img width="50px" height="50px" src="img/wolf.png" style="margin: 10px; float: right;" alt="Agenda" class="no-border">
 			</div>
 
 
@@ -136,7 +140,7 @@
 				
 				<section>
 					<section>
-						<h2>Actor model</h2>
+						<h3>Actor model</h3>
 						<p>
 							<img width="400" height="300" src="img/actor/actor.jpg" alt="Up arrow">
 						</p>
@@ -251,7 +255,7 @@
 					</section>
 
 					<section>
-						<h3>Example: calculate the value of Pi</h3>
+						<h3>Example: calculate the value of Pi </h3>
 						<p>
 							Let's do it with actors
 						</p>
@@ -377,7 +381,7 @@
 						</p>
 
 					</section>
-		<section>
+		<section style="width: 110%">
 			<p>
 				Worker actor:
 			</p>
@@ -403,7 +407,7 @@
         }
     }
 
-			</code></pre>						
+			</code></pre>
 		</section>
 
 		<section>
@@ -416,54 +420,66 @@
 
 		<section>
 			<p>
-				Master actor:
+				Master actor (Constructor):
 			</p>
 			<pre><code data-trim>
-				public static class Master extends UntypedActor {
-        private final int nrOfMessages;
-        private final int nrOfElements;
+public static class Master extends UntypedActor {
+	private final int nrOfMessages;
+	private final int nrOfElements;
 
-        private double pi;
-        private int nrOfResults;
-        private final long start = System.currentTimeMillis();
+	private double pi;
+	private int nrOfResults;
+	private final long start = System.currentTimeMillis();
 
-        private final ActorRef listener;
-        private final ActorRef workerRouter;
+	private final ActorRef listener;
+	private final ActorRef workerRouter;
 
-        public Master(final int nrOfWorkers, int nrOfMessages, int nrOfElements, ActorRef listener) {
-            this.nrOfMessages = nrOfMessages;
-            this.nrOfElements = nrOfElements;
-            this.listener = listener;
+  public Master(final int nrOfWorkers, int nrOfMessages, int nrOfElements,
+				ActorRef listener) {
+	this.nrOfMessages = nrOfMessages;
+	this.nrOfElements = nrOfElements;
+	this.listener = listener;
 
-            workerRouter = this.getContext().actorOf(new Props(Worker.class).withRouter(new RoundRobinRouter(nrOfWorkers)),
-                    "workerRouter");
-        }
-
-        public void onReceive(Object message) {
-            if (message instanceof Calculate) {
-                for (int start = 0; start < nrOfMessages; start++) {
-                    workerRouter.tell(new Work(start, nrOfElements), getSelf());
-                }
-            } else if (message instanceof Result) {
-                Result result = (Result) message;
-                pi += result.getValue();
-                nrOfResults += 1;
-                if (nrOfResults == nrOfMessages) {
-                    // Send the result to the listener
-                    Duration duration = Duration.create(System.currentTimeMillis() - start, TimeUnit.MILLISECONDS);
-                    listener.tell(new PiApproximation(pi, duration), getSelf());
-                    // Stops this actor and all its supervised children
-                    getContext().stop(getSelf());
-                }
-            } else {
-                unhandled(message);
-            }
-        }
-
+	workerRouter = this.getContext().actorOf(new Props(Worker.class).withRouter(
+				new RoundRobinRouter(nrOfWorkers)), "workerRouter");
+}
 			</code></pre>						
 		</section>
 
 		<section>
+			<p>
+				Master actor (onReceive):
+			</p>
+<pre><code data-trim class="java">
+public void onReceive(Object message) {
+
+  if (message instanceof Calculate) {
+     for (int start = 0; start < nrOfMessages; start++) {
+         workerRouter.tell(new Work(start, nrOfElements), getSelf());
+     }
+  } else if (message instanceof Result) {
+     Result result = (Result) message;
+     pi += result.getValue();
+     nrOfResults += 1;
+
+     if (nrOfResults == nrOfMessages) {
+        // Send the result to the listener
+        Duration duration = Duration.create(System.currentTimeMillis() - start,
+           TimeUnit.MILLISECONDS);
+        listener.tell(new PiApproximation(pi, duration), getSelf());
+        // Stops this actor and all its supervised children
+	    getContext().stop(getSelf());
+     }
+
+  } else {
+    unhandled(message);
+  }
+}
+</code></pre>
+
+		</section>
+
+					<section>
 			<p>
 				Listener Actor: <br/>
 				<img width="700" height="600" src="img/actor/akka/pi_listenner.png" alt="Yep">	
@@ -477,17 +493,20 @@
 			</p>
 			<pre><code data-trim>
 public static class Listener extends UntypedActor {
-            public void onReceive(Object message) {
-                if (message instanceof PiApproximation) {
-                    PiApproximation approximation = (PiApproximation) message;
-                    System.out.println(String.format("\n\tPi approximation: \t\t%s\n\tCalculation time: \t%s",
-                            approximation.getPi(), approximation.getDuration()));
-                    getContext().system().shutdown();
-                } else {
-                    unhandled(message);
-                }
-            }
+    public void onReceive(Object message) {
+        if (message instanceof PiApproximation) {
+           PiApproximation approximation = (PiApproximation) message;
+
+           System.out.println(
+				     String.format("\n\tPi approximation: \t\t%s\n\tCalculation time: \t%s",
+		         approximation.getPi(), approximation.getDuration()));
+
+           getContext().system().shutdown();
+        } else {
+           unhandled(message);
         }
+    }
+}
 
 			</code></pre>						
 		</section>
@@ -496,38 +515,37 @@ public static class Listener extends UntypedActor {
 			<p>
 				Pi classs:
 			</p>
-			<pre><code data-trim>
+			<pre><code data-trim class="java">
 public static void main(String[] args) {
-        Pi pi = new Pi();
-        pi.calculate(4, 10000, 10000);
-    }
+   Pi pi = new Pi();
+   pi.calculate(4, 10000, 10000);
+}
+// actors and messages ...
+public void calculate(final int nrOfWorkers, final int nrOfElements,
+		final int nrOfMessages) {
+   // Create an Akka system
+   ActorSystem system = ActorSystem.create("PiSystem");
 
-    // actors and messages ...
+   // create the result listener, which will print the result and shutdown the system
+   final ActorRef listener = system.actorOf(new Props(Master.Listener.class),
+				"listener");
 
-    public void calculate(final int nrOfWorkers, final int nrOfElements, final int nrOfMessages) {
-        // Create an Akka system
-        ActorSystem system = ActorSystem.create("PiSystem");
+   // create the master
+   ActorRef master = system.actorOf(new Props(new UntypedActorFactory() {
+      public UntypedActor create() {
+         return new Master(nrOfWorkers, nrOfMessages, nrOfElements, listener);
+      }
+   }), "master");
 
-        // create the result listener, which will print the result and shutdown the system
-        final ActorRef listener = system.actorOf(new Props(Master.Listener.class), "listener");
-
-        // create the master
-        ActorRef master = system.actorOf(new Props(new UntypedActorFactory() {
-            public UntypedActor create() {
-                return new Master(nrOfWorkers, nrOfMessages, nrOfElements, listener);
-            }
-        }), "master");
-
-        // start the calculation
-        master.tell(new Calculate());
-
-    }
+   // start the calculation
+   master.tell(new Calculate());
+}
 
 			</code></pre>						
 		</section>
 
 		<section>
-			<img width="600" height="600" src="img/actor/akka/summary.jpg" alt="Up arrow" class="no-border">	
+			<img width="800" height="600" src="img/summary.jpg" alt="Up arrow" class="no-border">
 		</section>
 
 	</section>
