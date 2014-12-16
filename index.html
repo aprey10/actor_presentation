@@ -422,7 +422,7 @@
 			<p>
 				Master actor (Constructor):
 			</p>
-			<pre><code data-trim>
+			<pre><code data-trim class="java">
 public static class Master extends UntypedActor {
 	private final int nrOfMessages;
 	private final int nrOfElements;
@@ -593,7 +593,7 @@ public void calculate(final int nrOfWorkers, final int nrOfElements,
 		</section>
 
 		<section>
-			<h3>Fork/Join Framework</h3>
+			<h4>Fork/Join Framework</h4>
 			<p class="fragment" style="text-align: left; font-size: 25px;">
 			The <i>fork/join framework</i> is an implementation of the ExecutorService interface that helps you take advantage of multiple processors. 
 			It is designed for work that can be broken into smaller pieces recursively. The goal is to use all the available processing power to enhance the performance of your application.
@@ -635,7 +635,7 @@ public void calculate(final int nrOfWorkers, final int nrOfElements,
 				<li>collectParallel()</li>
 				<li>collectManyParallel()</li>
 				<li>findAllParallel()</li>
-				<li>findAnyParallel</li>
+				<li>findAnyParallel()</li>
 				<li>findParallel()</li>
 				<li>everyParallel()</li>
 				<li>anyParallel()</li>
@@ -759,6 +759,22 @@ assert stream1.val == stream2.val
 assert stream1.val == stream2.val
 assert stream1.val == stream2.val
 			</code></pre>
+
+			<p>
+				<span style="font-style: italic">DataflowQueues</span> and <span style="font-style: italic">DataflowBroadcast</span>
+				Concepts. You may think of them as thread-safe buffers or queues for message transfer among concurrent tasks or threads.
+			</p>
+
+		</section>
+
+		<section>
+			<p>Dataflow approach benefits</p>
+			<ul>
+				<li>No race-conditions</li>
+				<li>No deadlocks</li>
+				<li>Completely deterministic programs</li>
+				<li>BEAUTIFUL code.</li>
+			</ul>
 
 		</section>
 
